@@ -9,6 +9,8 @@ import os
 import re
 import time
 import requests
+import json
+from datetime import datetime
 
 # ---------------- SETUP ----------------
 
@@ -20,6 +22,56 @@ serper_key = os.getenv("SERPER_API_KEY")
 
 if not groq_key or not cohere_key or not serper_key:
     raise ValueError("Missing API keys")
+
+# ---------------- OUTPUT DIRECTORY ----------------
+
+OUTPUT_DIR = "outputs"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+def get_timestamp():
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+def save_outputs(query, result):
+    timestamp = get_timestamp()
+
+    json_path = os.path.join(OUTPUT_DIR, f"{timestamp}.json")
+    log_path = os.path.join(OUTPUT_DIR, f"{timestamp}.log")
+
+    structured_data = {
+        "timestamp": timestamp,
+        "query": query,
+        "answer": result.get("answer"),
+        "claims": result.get("claims"),
+        "fact_score": result.get("fact_score"),
+        "logic_score": result.get("logic_score"),
+        "confidence_score": result.get("confidence_score"),
+        "hallucination_risk": result.get("hallucination_risk"),
+        "final_report": result.get("final_report")
+    }
+
+    # Save JSON
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(structured_data, f, indent=4)
+
+    # Save Log
+    with open(log_path, "w", encoding="utf-8") as f:
+        f.write("═══════════════════════════════════════\n")
+        f.write("HALLUCINATION DETECTION LOG\n")
+        f.write("═══════════════════════════════════════\n\n")
+        f.write(f"Timestamp: {timestamp}\n\n")
+        f.write("QUERY:\n")
+        f.write(query + "\n\n")
+        f.write("ANSWER:\n")
+        f.write((result.get("answer") or "") + "\n\n")
+        f.write("CLAIMS:\n")
+        f.write("\n".join(result.get("claims") or []) + "\n\n")
+        f.write("SCORES:\n")
+        f.write(f"Fact Score: {result.get('fact_score')}\n")
+        f.write(f"Logic Score: {result.get('logic_score')}\n")
+        f.write(f"Confidence Score: {result.get('confidence_score')}\n")
+        f.write(f"Final Hallucination Risk: {result.get('hallucination_risk')}\n\n")
+        f.write("FINAL REPORT:\n")
+        f.write(result.get("final_report") or "")
 
 # ---------------- MODELS ----------------
 
@@ -125,7 +177,7 @@ Answer:
 
         return {"claims": claims}
 
-    # -------- FACT CHECK CLAIM-BY-CLAIM --------
+    # -------- FACT CHECK --------
     def fact_check_node(state):
 
         claim_scores = []
@@ -146,7 +198,6 @@ Evidence:
 Return:
 FactScore: <0-1>
 """
-
             result = safe_invoke(verifier_llm, prompt)
 
             match = re.search(r"FactScore:\s*([0-9.]+)", result)
@@ -169,6 +220,7 @@ Return:
 LogicScore: <0-1>
 """
         result = safe_invoke(logic_llm, prompt)
+
         match = re.search(r"LogicScore:\s*([0-9.]+)", result)
         score = float(match.group(1)) if match else 0.5
         return {"logic_score": score}
@@ -185,6 +237,7 @@ Return:
 ConfidenceScore: <0-1>
 """
         result = safe_invoke(confidence_llm, prompt)
+
         match = re.search(r"ConfidenceScore:\s*([0-9.]+)", result)
         score = float(match.group(1)) if match else 0.5
         return {"confidence_score": score}
@@ -212,8 +265,6 @@ Final Risk: {hallucination_risk:.2f}
             "hallucination_risk": hallucination_risk,
             "final_report": report
         }
-
-    # -------- GRAPH --------
 
     workflow.add_node("generate_node", generate_node)
     workflow.add_node("extract_claims_node", extract_claims_node)
@@ -254,6 +305,9 @@ def analyze():
         workflow = create_workflow()
         result = workflow.invoke({"query": query})
 
+        # SAVE FILES
+        save_outputs(query, result)
+
         return jsonify({
             "answer": result.get("answer", ""),
             "claims": "\n".join(result.get("claims", [])),
@@ -276,6 +330,8 @@ if __name__ == "__main__":
         query = input("Enter your question: ")
         workflow = create_workflow()
         result = workflow.invoke({"query": query})
+
+        save_outputs(query, result)
 
         print("\nGenerated Answer:\n")
         print(result["answer"])

@@ -1,0 +1,23 @@
+{
+    "timestamp": "20260228_052236",
+    "query": "What causes the Northern Lights?",
+    "answer": "The Northern Lights (aurora\u202fborealis) are caused by **charged particles from the Sun** interacting with Earth\u2019s magnetic field and atmosphere.\n\n1. **Solar wind** \u2013 The Sun constantly emits a stream of charged particles (electrons and protons). During solar storms or coronal mass ejections, this stream becomes especially intense.  \n2. **Magnetosphere** \u2013 Earth\u2019s magnetic field guides many of those particles toward the polar regions, where the field lines converge.  \n3. **Atmospheric collisions** \u2013 When the particles plunge into the upper atmosphere (about 80\u2013300\u202fkm altitude), they collide with gases\u2014mainly oxygen and nitrogen.  \n4. **Excitation & emission** \u2013 These collisions excite the atmospheric atoms and molecules; when they return to their normal energy states they release photons (light).  \n5. **Colors** \u2013  \n   * **Oxygen** at ~100\u202fkm produces the familiar green light; at higher altitudes (~200\u202fkm) it can emit red.  \n   * **Nitrogen** yields blue\u2011purple or reddish\u2011pink hues, depending on the type of collision.\n\nThe combined effect of many such emissions creates the shimmering curtains, arcs, and patches we see as the Northern Lights. The same process at the South Pole creates the Southern Lights (aurora australis).",
+    "claims": [
+        "Here are the factual claims extracted as separate bullet points:",
+        "* The Northern Lights (aurora borealis) are caused by charged particles from the Sun interacting with Earth's magnetic field and atmosphere.",
+        "* The Sun constantly emits a stream of charged particles (electrons and protons).",
+        "* During solar storms or coronal mass ejections, the stream of charged particles from the Sun becomes especially intense.",
+        "* Earth's magnetic field guides charged particles toward the polar regions, where the field lines converge.",
+        "* Charged particles plunge into the upper atmosphere at an altitude of about 80-300 km.",
+        "* The upper atmosphere is composed mainly of oxygen and nitrogen.",
+        "* Collisions between charged particles and atmospheric atoms and molecules excite them, causing them to release photons (light) when they return to their normal energy states.",
+        "* Oxygen at an altitude of ~100 km produces green light, and at higher altitudes (~200 km) it can emit red light.",
+        "* Nitrogen yields blue-purple or reddish-pink hues, depending on the type of collision.",
+        "* The Northern Lights and Southern Lights are created by the same process, with the Northern Lights occurring at the North Pole and the Southern Lights occurring at the South Pole."
+    ],
+    "fact_score": 0.7090909090909091,
+    "logic_score": 1.0,
+    "confidence_score": 0.5,
+    "hallucination_risk": 0.24545454545454548,
+    "final_report": "\nHallucination Detection Report\n--------------------------------\nFact Score: 0.71\nLogic Score: 1.00\nConfidence Score: 0.50\n\nFinal Risk: 0.25\n"
+}
