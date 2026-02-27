@@ -1,54 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>NeuraDialectic</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
     <style>
         body {
-            font-family: "Segoe UI", sans-serif;
+            font-family: Arial, sans-serif;
             background: #0f172a;
             color: #e2e8f0;
-            margin: 0;
             padding: 40px;
         }
 
-        h1 {
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-            color: #94a3b8;
-            margin-bottom: 30px;
+        h2 {
+            margin-bottom: 15px;
         }
 
         textarea {
             width: 100%;
-            min-height: 120px;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #334155;
+            height: 120px;
             background: #1e293b;
             color: #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #334155;
         }
 
         input[type="number"] {
+            width: 80px;
             padding: 6px;
-            border-radius: 6px;
-            border: 1px solid #334155;
             background: #1e293b;
             color: #e2e8f0;
-            width: 80px;
+            border: 1px solid #334155;
+            border-radius: 6px;
         }
 
         button {
-            margin-top: 12px;
             padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
             background: #3b82f6;
             color: white;
+            border: none;
+            border-radius: 6px;
+            margin-top: 10px;
             cursor: pointer;
         }
 
@@ -58,85 +51,102 @@
 
         .card {
             background: #1e293b;
+            margin-top: 25px;
             padding: 20px;
             border-radius: 10px;
-            margin-top: 25px;
             border: 1px solid #334155;
         }
 
-        .card h3 {
-            margin-top: 0;
-        }
-
-        .output-box {
-            white-space: pre-wrap;
-            line-height: 1.6;
+        .output {
             background: #0f172a;
             padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #334155;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        .confidence {
+            font-weight: bold;
+            color: #3b82f6;
             margin-top: 10px;
         }
 
         select {
             padding: 6px;
-            border-radius: 6px;
+            margin-top: 10px;
             background: #1e293b;
             color: white;
+            border-radius: 6px;
             border: 1px solid #334155;
         }
 
-        .translate-section {
-            margin-top: 20px;
+        details {
+            margin-top: 10px;
         }
 
-        .confidence-badge {
+        summary {
+            cursor: pointer;
             font-weight: bold;
-            font-size: 16px;
-            color: #3b82f6;
         }
     </style>
 </head>
 
 <body>
 
-<h1>NeuraDialectic</h1>
-<div class="subtitle">Self-Improving Epistemic Reasoning Engine</div>
+<h2>NeuraDialectic Multi-Agent Reasoning Engine</h2>
 
 <form method="POST" action="/neurodialectic">
-    <textarea name="query" placeholder="Ask a complex reasoning question..." required></textarea>
+    <textarea name="query" placeholder="Ask your question..." required></textarea><br><br>
 
-    <div style="margin-top:15px;">
-        Max Iterations:
-        <input type="number" name="max_iterations" value="5" min="1" max="10">
-    </div>
+    Max Iterations:
+    <input type="number" name="max_iterations" value="5" min="1" max="10"><br><br>
 
-    <button type="submit">Run Epistemic Reasoning</button>
+    <button type="submit">Run</button>
 </form>
 
 {% if final_answer %}
 
 <div class="card">
+    <h3>Generator Output</h3>
+    <div class="output">{{ generator_output }}</div>
+</div>
+
+<div class="card">
+    <h3>Critic Output</h3>
+    <div class="output">{{ critic_output }}</div>
+</div>
+
+<div class="card">
+    <h3>Validator Output</h3>
+    <div class="output">{{ validator_output }}</div>
+    <div class="confidence">Confidence: {{ confidence }}</div>
+</div>
+
+{% if refinement_outputs and refinement_outputs|length > 0 %}
+<div class="card">
+    <h3>Refinement Iterations</h3>
+    {% for ref in refinement_outputs %}
+        <details>
+            <summary>Iteration {{ loop.index }}</summary>
+            <div class="output">{{ ref }}</div>
+        </details>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="card">
     <h3>Final Answer</h3>
-    <div id="finalAnswer" class="output-box">{{ final_answer }}</div>
+    <div class="output">{{ final_answer }}</div>
 </div>
 
 <div class="card">
-    <h3>Validator Confidence</h3>
-    <div class="confidence-badge">{{ confidence }}</div>
+    <h3>Summary (Cohere)</h3>
+    <div id="summaryBox" class="output">{{ summary }}</div>
 </div>
 
 <div class="card">
-    <h3>Full Reasoning Trace</h3>
-    <div id="reasoningTrace" class="output-box">{{ reasoning_trace }}</div>
-</div>
-
-<div class="card">
-    <h3>Debate Summary</h3>
-    <div id="summaryBox" class="output-box">{{ summary }}</div>
-</div>
-
-<div class="card translate-section">
     <h3>Translate Summary</h3>
 
     <select id="languageSelect">
@@ -148,14 +158,16 @@
         <option value="bn-IN">Bengali</option>
     </select>
 
-    <button onclick="translateSummary()">Translate Summary</button>
+    <br>
+
+    <button onclick="translateSummary()">Translate</button>
 </div>
 
 <script>
 function translateSummary() {
 
-    const language = document.getElementById("languageSelect").value;
     const summary = document.getElementById("summaryBox").innerText;
+    const language = document.getElementById("languageSelect").value;
 
     fetch("/translate_summary", {
         method: "POST",
