@@ -89,13 +89,19 @@
         .translate-section {
             margin-top: 20px;
         }
+
+        .confidence-badge {
+            font-weight: bold;
+            font-size: 16px;
+            color: #3b82f6;
+        }
     </style>
 </head>
 
 <body>
 
 <h1>NeuraDialectic</h1>
-<div class="subtitle">A Self-Improving Epistemic Reasoning Engine</div>
+<div class="subtitle">Self-Improving Epistemic Reasoning Engine</div>
 
 <form method="POST" action="/neurodialectic">
     <textarea name="query" placeholder="Ask a complex reasoning question..." required></textarea>
@@ -117,7 +123,7 @@
 
 <div class="card">
     <h3>Validator Confidence</h3>
-    <div class="output-box">{{ confidence }}</div>
+    <div class="confidence-badge">{{ confidence }}</div>
 </div>
 
 <div class="card">
@@ -125,8 +131,13 @@
     <div id="reasoningTrace" class="output-box">{{ reasoning_trace }}</div>
 </div>
 
+<div class="card">
+    <h3>Debate Summary</h3>
+    <div id="summaryBox" class="output-box">{{ summary }}</div>
+</div>
+
 <div class="card translate-section">
-    <h3>Translate Output</h3>
+    <h3>Translate Summary</h3>
 
     <select id="languageSelect">
         <option value="hi-IN">Hindi</option>
@@ -137,31 +148,28 @@
         <option value="bn-IN">Bengali</option>
     </select>
 
-    <button onclick="translateTrace()">Translate</button>
+    <button onclick="translateSummary()">Translate Summary</button>
 </div>
 
 <script>
-function translateTrace() {
+function translateSummary() {
 
     const language = document.getElementById("languageSelect").value;
-    const finalAnswer = document.getElementById("finalAnswer").innerText;
-    const reasoningTrace = document.getElementById("reasoningTrace").innerText;
+    const summary = document.getElementById("summaryBox").innerText;
 
-    fetch("/translate_trace", {
+    fetch("/translate_summary", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            final_answer: finalAnswer,
-            reasoning_trace: reasoningTrace,
+            summary: summary,
             language: language
         })
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById("finalAnswer").innerText = data.translated_answer;
-        document.getElementById("reasoningTrace").innerText = data.translated_trace;
+        document.getElementById("summaryBox").innerText = data.translated_summary;
     })
     .catch(error => {
         alert("Translation failed.");

@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 from flask import Flask, request, render_template, jsonify
 import os
 import re
-from datetime import datetime
 import logging
 
 # -------------------------------
@@ -25,11 +24,11 @@ logger = logging.getLogger(__name__)
 groq_key = os.getenv("GROQ_SCAR_KEY")
 sarvam_key = os.getenv("SARVAM_API_KEY")
 
-if not groq_key:
-    raise ValueError("Missing GROQ API key")
+if not groq_key or not sarvam_key:
+    raise ValueError("Missing API keys")
 
 # -------------------------------
-# LLM CONFIGURATION (Your Updated Models)
+# LLM CONFIGURATION
 # -------------------------------
 
 generator_llm = ChatGroq(
@@ -51,7 +50,7 @@ validator_llm = ChatGroq(
 )
 
 # -------------------------------
-# FREE VECTOR MEMORY
+# VECTOR MEMORY (FREE)
 # -------------------------------
 
 embedding_model = HuggingFaceEmbeddings(
@@ -65,7 +64,7 @@ vector_store = Chroma(
 )
 
 # -------------------------------
-# SARVAM TRANSLATION SETUP
+# SARVAM TRANSLATION
 # -------------------------------
 
 sarvam_client = SarvamAI(
@@ -99,6 +98,7 @@ def create_neurodialectic_workflow(query, max_iterations=5):
         history: str
         iteration: int
         final_answer: Optional[str]
+        summary: Optional[str]
 
     workflow = StateGraph(GraphState)
 
@@ -127,7 +127,7 @@ def create_neurodialectic_workflow(query, max_iterations=5):
     # ---------------- CRITIC ----------------
     def critic_node(state):
         prompt = f"""
-        Critically analyze this answer.
+        Critically analyze this answer:
 
         {state['draft']}
 
@@ -196,7 +196,6 @@ def create_neurodialectic_workflow(query, max_iterations=5):
 
     # ---------------- FINALIZE ----------------
     def finalize_node(state):
-
         if state["confidence"] < 0.85:
             vector_store.add_documents([
                 Document(
@@ -211,11 +210,33 @@ def create_neurodialectic_workflow(query, max_iterations=5):
 
         return {"final_answer": state["draft"]}
 
+    # ---------------- SUMMARIZER ----------------
+    def summarizer_node(state):
+        prompt = f"""
+        Summarize the reasoning process clearly and concisely.
+
+        Include:
+        - Final conclusion
+        - Key strengths
+        - Major critiques
+        - Confidence assessment
+
+        Reasoning Trace:
+        {state['history']}
+        """
+
+        summary = generator_llm.invoke(prompt).content
+
+        return {"summary": summary}
+
+    # ---------------- GRAPH STRUCTURE ----------------
+
     workflow.add_node("generator", generator_node)
     workflow.add_node("critic", critic_node)
     workflow.add_node("validator", validator_node)
     workflow.add_node("refine", refine_node)
     workflow.add_node("finalize", finalize_node)
+    workflow.add_node("summarizer", summarizer_node)
 
     workflow.set_entry_point("generator")
     workflow.add_edge("generator", "critic")
@@ -228,7 +249,8 @@ def create_neurodialectic_workflow(query, max_iterations=5):
     )
 
     workflow.add_edge("refine", "critic")
-    workflow.add_edge("finalize", END)
+    workflow.add_edge("finalize", "summarizer")
+    workflow.add_edge("summarizer", END)
 
     return workflow
 
@@ -256,29 +278,23 @@ def neurodialectic():
             "neurodialectic.html",
             final_answer=result.get("final_answer"),
             reasoning_trace=result.get("history"),
-            confidence=result.get("confidence")
+            confidence=result.get("confidence"),
+            summary=result.get("summary")
         )
 
     return render_template("neurodialectic.html")
 
-@app.route("/translate_trace", methods=["POST"])
-def translate_trace():
+@app.route("/translate_summary", methods=["POST"])
+def translate_summary():
     data = request.json
 
-    translated_answer = translate_text(
-        data.get("final_answer", ""),
-        data.get("language")
-    )
-
-    translated_trace = translate_text(
-        data.get("reasoning_trace", ""),
+    translated_summary = translate_text(
+        data.get("summary", ""),
         data.get("language")
     )
 
     return jsonify({
-        "translated_answer": translated_answer,
-        "translated_trace": translated_trace,
-        "confidence": data.get("confidence")
+        "translated_summary": translated_summary
     })
 
 # -------------------------------
