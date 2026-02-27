@@ -22,7 +22,30 @@
             background: linear-gradient(90deg, #3b82f6, #06b6d4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .pipeline {
+            font-size: 13px;
+            color: #94a3b8;
             margin-bottom: 25px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #06b6d4;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #06b6d4;
+            animation: pulse 1.5s infinite;
+            margin-right: 6px;
+        }
+
+        @keyframes pulse {
+            0% {opacity: 0.4;}
+            50% {opacity: 1;}
+            100% {opacity: 0.4;}
         }
 
         form {
@@ -43,7 +66,6 @@
             padding: 14px;
             border: 1px solid #334155;
             font-size: 15px;
-            transition: 0.3s;
         }
 
         textarea:focus {
@@ -52,7 +74,7 @@
             box-shadow: 0 0 15px rgba(59,130,246,0.5);
         }
 
-        input[type="number"] {
+        input[type="number"], select {
             padding: 8px;
             background: #0f172a;
             color: #e2e8f0;
@@ -90,7 +112,7 @@
 
         .card h3 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             margin-bottom: 12px;
             color: #3b82f6;
         }
@@ -106,20 +128,13 @@
             border: 1px solid #1e293b;
         }
 
-        .confidence {
-            font-weight: bold;
+        .confidence-box {
             margin-top: 10px;
-            font-size: 15px;
-            color: #06b6d4;
-        }
-
-        select {
-            padding: 8px;
-            margin-top: 10px;
-            background: #0f172a;
-            color: white;
+            padding: 12px;
             border-radius: 8px;
-            border: 1px solid #334155;
+            background: rgba(6,182,212,0.1);
+            border: 1px solid #06b6d4;
+            font-weight: 600;
         }
 
         details {
@@ -136,11 +151,6 @@
             color: #06b6d4;
         }
 
-        @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(10px);}
-            to {opacity: 1; transform: translateY(0);}
-        }
-
         .glow-divider {
             height: 2px;
             margin: 40px 0;
@@ -152,13 +162,17 @@
 
 <body>
 
-<h2>NeuraDialectic · Multi-Agent Epistemic Engine</h2>
+<h2>NeuraDialectic · Adversarial Epistemic Engine</h2>
+<div class="pipeline">
+    <span class="status-indicator"></span>
+    Generator → Critic → Red Team → Validator → Refinement → Convergence
+</div>
 
 <form method="POST" action="/neurodialectic">
     <textarea name="query" placeholder="Ask your question..." required></textarea><br><br>
 
     Max Iterations:
-    <input type="number" name="max_iterations" value="5" min="1" max="10"><br><br>
+    <input type="number" name="max_iterations" value="3" min="1" max="10"><br><br>
 
     <button type="submit">Initiate Reasoning</button>
 </form>
@@ -178,14 +192,21 @@
 </div>
 
 <div class="card">
+    <h3>Red Team Adversarial Analysis</h3>
+    <div class="output">{{ redteam_output }}</div>
+</div>
+
+<div class="card">
     <h3>Validator Assessment</h3>
     <div class="output">{{ validator_output }}</div>
-    <div class="confidence">Confidence Score: {{ confidence }}</div>
+    <div class="confidence-box">
+        Final Confidence Score: {{ confidence }}
+    </div>
 </div>
 
 {% if refinement_outputs and refinement_outputs|length > 0 %}
 <div class="card">
-    <h3>Refinement Iterations</h3>
+    <h3>Refinement Iterations ({{ refinement_outputs|length }})</h3>
     {% for ref in refinement_outputs %}
         <details>
             <summary>Iteration {{ loop.index }}</summary>
@@ -216,9 +237,7 @@
         <option value="mr-IN">Marathi</option>
         <option value="bn-IN">Bengali</option>
     </select>
-
     <br>
-
     <button onclick="translateSummary()">Translate</button>
 </div>
 
@@ -230,9 +249,7 @@ function translateSummary() {
 
     fetch("/translate_summary", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             summary: summary,
             language: language
