@@ -51,7 +51,7 @@ logger.addHandler(console_handler)
 
 # ---------------- API KEYS ----------------
 
-groq_key = os.getenv("GROQ_SCAR_KEY")
+groq_key = os.getenv("GROQ_KEERTHANA_KEY")
 cohere_key = os.getenv("COHERE_API_KEY")
 sarvam_key = os.getenv("SARVAM_API_KEY")
 
@@ -257,7 +257,7 @@ Reason: <brief>
         severity_match = re.search(r"Severity Score.*?([0-9.]+)", state["redteam"])
         if severity_match:
             severity = float(severity_match.group(1))
-            confidence = max(0, confidence - severity * 0.3)
+            confidence = max(0, confidence - severity * 0.01)
 
         return {
             "validation": response,

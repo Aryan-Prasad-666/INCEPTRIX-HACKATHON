@@ -1,0 +1,32 @@
+2026-02-28 01:26:48,299 | INFO | GENERATOR | Attempt 1
+2026-02-28 01:26:51,931 | INFO | GENERATOR | Success
+2026-02-28 01:26:51,934 | INFO | CRITIC | Attempt 1
+2026-02-28 01:26:53,578 | INFO | CRITIC | Success
+2026-02-28 01:26:53,580 | INFO | REDTEAM | Attempt 1
+2026-02-28 01:26:57,332 | INFO | REDTEAM | Success
+2026-02-28 01:26:57,335 | INFO | VALIDATOR | Attempt 1
+2026-02-28 01:27:01,842 | INFO | VALIDATOR | Success
+2026-02-28 01:27:01,846 | INFO | REFINE | Attempt 1
+2026-02-28 01:27:09,112 | INFO | REFINE | Success
+2026-02-28 01:27:09,114 | INFO | CRITIC | Attempt 1
+2026-02-28 01:27:12,080 | INFO | CRITIC | Success
+2026-02-28 01:27:12,082 | INFO | REDTEAM | Attempt 1
+2026-02-28 01:27:15,561 | INFO | REDTEAM | Success
+2026-02-28 01:27:15,585 | INFO | VALIDATOR | Attempt 1
+2026-02-28 01:27:20,477 | INFO | VALIDATOR | Success
+2026-02-28 01:27:20,478 | INFO | REFINE | Attempt 1
+2026-02-28 01:27:27,339 | INFO | REFINE | Success
+2026-02-28 01:27:27,343 | INFO | CRITIC | Attempt 1
+2026-02-28 01:27:29,590 | INFO | CRITIC | Success
+2026-02-28 01:27:29,592 | INFO | REDTEAM | Attempt 1
+2026-02-28 01:27:31,946 | INFO | REDTEAM | Success
+2026-02-28 01:27:31,947 | INFO | VALIDATOR | Attempt 1
+2026-02-28 01:27:37,064 | INFO | VALIDATOR | Success
+2026-02-28 01:27:37,068 | INFO | REFINE | Attempt 1
+2026-02-28 01:27:43,926 | INFO | REFINE | Success
+2026-02-28 01:27:43,929 | INFO | CRITIC | Attempt 1
+2026-02-28 01:27:44,055 | WARNING | CRITIC | Failed attempt 1 | Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jvck0s4nea58zbpkkdxgsv2v` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99778, Requested 1361. Please try again in 16m24.096s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+2026-02-28 01:27:46,057 | INFO | CRITIC | Attempt 2
+2026-02-28 01:27:46,105 | WARNING | CRITIC | Failed attempt 2 | Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jvck0s4nea58zbpkkdxgsv2v` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99776, Requested 1361. Please try again in 16m22.367999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+2026-02-28 01:27:50,113 | INFO | CRITIC | Attempt 3
+2026-02-28 01:27:50,171 | WARNING | CRITIC | Failed attempt 3 | Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01jvck0s4nea58zbpkkdxgsv2v` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99771, Requested 1361. Please try again in 16m18.048s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
