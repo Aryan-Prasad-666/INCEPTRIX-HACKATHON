@@ -5,97 +5,154 @@
     <meta charset="UTF-8">
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
-            background: #0f172a;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top left, #0f172a, #020617);
             color: #e2e8f0;
-            padding: 40px;
+            padding: 50px 10%;
         }
 
         h2 {
-            margin-bottom: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+        }
+
+        form {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
         }
 
         textarea {
             width: 100%;
-            height: 120px;
-            background: #1e293b;
+            height: 130px;
+            background: #0f172a;
             color: #e2e8f0;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 14px;
             border: 1px solid #334155;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 15px rgba(59,130,246,0.5);
         }
 
         input[type="number"] {
-            width: 80px;
-            padding: 6px;
-            background: #1e293b;
+            padding: 8px;
+            background: #0f172a;
             color: #e2e8f0;
             border: 1px solid #334155;
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         button {
-            padding: 8px 16px;
-            background: #3b82f6;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
             color: white;
             border: none;
-            border-radius: 6px;
-            margin-top: 10px;
+            border-radius: 8px;
+            margin-top: 12px;
             cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
         }
 
         button:hover {
-            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(59,130,246,0.6);
         }
 
         .card {
-            background: #1e293b;
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #334155;
+            background: rgba(15, 23, 42, 0.8);
+            margin-top: 30px;
+            padding: 22px;
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 30px rgba(59,130,246,0.15);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #3b82f6;
         }
 
         .output {
-            background: #0f172a;
-            padding: 15px;
-            border-radius: 6px;
+            background: #020617;
+            padding: 16px;
+            border-radius: 10px;
             white-space: pre-wrap;
             overflow-x: auto;
             margin-top: 10px;
-            line-height: 1.6;
+            line-height: 1.7;
+            border: 1px solid #1e293b;
         }
 
         .confidence {
             font-weight: bold;
-            color: #3b82f6;
             margin-top: 10px;
+            font-size: 15px;
+            color: #06b6d4;
         }
 
         select {
-            padding: 6px;
+            padding: 8px;
             margin-top: 10px;
-            background: #1e293b;
+            background: #0f172a;
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #334155;
         }
 
         details {
             margin-top: 10px;
+            background: rgba(30,41,59,0.5);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #334155;
         }
 
         summary {
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            color: #06b6d4;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(10px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .glow-divider {
+            height: 2px;
+            margin: 40px 0;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            box-shadow: 0 0 15px #3b82f6;
         }
     </style>
 </head>
 
 <body>
 
-<h2>NeuraDialectic Multi-Agent Reasoning Engine</h2>
+<h2>NeuraDialectic · Multi-Agent Epistemic Engine</h2>
 
 <form method="POST" action="/neurodialectic">
     <textarea name="query" placeholder="Ask your question..." required></textarea><br><br>
@@ -103,10 +160,12 @@
     Max Iterations:
     <input type="number" name="max_iterations" value="5" min="1" max="10"><br><br>
 
-    <button type="submit">Run</button>
+    <button type="submit">Initiate Reasoning</button>
 </form>
 
 {% if final_answer %}
+
+<div class="glow-divider"></div>
 
 <div class="card">
     <h3>Generator Output</h3>
@@ -114,14 +173,14 @@
 </div>
 
 <div class="card">
-    <h3>Critic Output</h3>
+    <h3>Critic Analysis</h3>
     <div class="output">{{ critic_output }}</div>
 </div>
 
 <div class="card">
-    <h3>Validator Output</h3>
+    <h3>Validator Assessment</h3>
     <div class="output">{{ validator_output }}</div>
-    <div class="confidence">Confidence: {{ confidence }}</div>
+    <div class="confidence">Confidence Score: {{ confidence }}</div>
 </div>
 
 {% if refinement_outputs and refinement_outputs|length > 0 %}
@@ -142,7 +201,7 @@
 </div>
 
 <div class="card">
-    <h3>Summary (Cohere)</h3>
+    <h3>Reasoning Summary</h3>
     <div id="summaryBox" class="output">{{ summary }}</div>
 </div>
 

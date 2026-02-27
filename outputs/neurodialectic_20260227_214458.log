@@ -1,0 +1,47 @@
+2026-02-27 21:46:02,743 | INFO | ============================================================
+2026-02-27 21:46:02,745 | INFO | New Run | Query: should ai be used in healthcare?
+2026-02-27 21:46:02,747 | INFO | Max Iterations: 2
+2026-02-27 21:46:05,865 | INFO | GENERATOR | Attempt 1
+2026-02-27 21:46:09,936 | INFO | GENERATOR | Success
+2026-02-27 21:46:09,938 | INFO | Generator completed initial draft
+2026-02-27 21:46:09,941 | INFO | CRITIC | Attempt 1
+2026-02-27 21:46:29,161 | INFO | CRITIC | Success
+2026-02-27 21:46:29,163 | INFO | Critic completed analysis
+2026-02-27 21:46:29,166 | INFO | VALIDATOR | Attempt 1
+2026-02-27 21:46:35,519 | INFO | VALIDATOR | Success
+2026-02-27 21:46:35,532 | WARNING | Validator parsing failed. Retrying once.
+2026-02-27 21:46:35,537 | INFO | VALIDATOR-RETRY | Attempt 1
+2026-02-27 21:46:38,937 | INFO | VALIDATOR-RETRY | Success
+2026-02-27 21:46:38,938 | INFO | Validator confidence: 0.5
+2026-02-27 21:46:38,940 | INFO | REFINE | Attempt 1
+2026-02-27 21:46:46,266 | INFO | REFINE | Success
+2026-02-27 21:46:46,267 | INFO | Refinement iteration 1
+2026-02-27 21:46:46,269 | INFO | CRITIC | Attempt 1
+2026-02-27 21:46:47,906 | INFO | CRITIC | Success
+2026-02-27 21:46:47,907 | INFO | Critic completed analysis
+2026-02-27 21:46:47,909 | INFO | VALIDATOR | Attempt 1
+2026-02-27 21:46:51,178 | INFO | VALIDATOR | Success
+2026-02-27 21:46:51,180 | WARNING | Validator parsing failed. Retrying once.
+2026-02-27 21:46:51,181 | INFO | VALIDATOR-RETRY | Attempt 1
+2026-02-27 21:47:10,845 | INFO | VALIDATOR-RETRY | Success
+2026-02-27 21:47:10,847 | INFO | Validator confidence: 0.5
+2026-02-27 21:47:10,849 | INFO | REFINE | Attempt 1
+2026-02-27 21:47:19,855 | INFO | REFINE | Success
+2026-02-27 21:47:19,856 | INFO | Refinement iteration 2
+2026-02-27 21:47:19,858 | INFO | CRITIC | Attempt 1
+2026-02-27 21:47:21,795 | INFO | CRITIC | Success
+2026-02-27 21:47:21,799 | INFO | Critic completed analysis
+2026-02-27 21:47:21,801 | INFO | VALIDATOR | Attempt 1
+2026-02-27 21:47:30,807 | INFO | VALIDATOR | Success
+2026-02-27 21:47:30,808 | WARNING | Validator parsing failed. Retrying once.
+2026-02-27 21:47:30,809 | INFO | VALIDATOR-RETRY | Attempt 1
+2026-02-27 21:47:50,885 | INFO | VALIDATOR-RETRY | Success
+2026-02-27 21:47:50,887 | INFO | Validator confidence: 0.5
+2026-02-27 21:47:50,889 | INFO | FAILURE-SUMMARIZER | Attempt 1
+2026-02-27 21:47:54,674 | INFO | FAILURE-SUMMARIZER | Success
+2026-02-27 21:47:55,845 | INFO | Failure pattern stored in memory
+2026-02-27 21:47:55,848 | INFO | SUMMARIZER | Attempt 1
+2026-02-27 21:48:04,807 | INFO | SUMMARIZER | Success
+2026-02-27 21:48:04,808 | INFO | Final summary generated
+2026-02-27 21:48:04,824 | INFO | Workflow execution complete
+2026-02-27 21:48:04,826 | INFO | ============================================================
