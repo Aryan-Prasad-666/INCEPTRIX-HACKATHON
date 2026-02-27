@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NeuraDialectic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        input[type="number"] {
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #e2e8f0;
+            width: 80px;
+        }
+
+        button {
+            margin-top: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border: 1px solid #334155;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .output-box {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            margin-top: 10px;
+        }
+
+        select {
+            padding: 6px;
+            border-radius: 6px;
+            background: #1e293b;
+            color: white;
+            border: 1px solid #334155;
+        }
+
+        .translate-section {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>NeuraDialectic</h1>
+<div class="subtitle">A Self-Improving Epistemic Reasoning Engine</div>
+
+<form method="POST" action="/neurodialectic">
+    <textarea name="query" placeholder="Ask a complex reasoning question..." required></textarea>
+
+    <div style="margin-top:15px;">
+        Max Iterations:
+        <input type="number" name="max_iterations" value="5" min="1" max="10">
+    </div>
+
+    <button type="submit">Run Epistemic Reasoning</button>
+</form>
+
+{% if final_answer %}
+
+<div class="card">
+    <h3>Final Answer</h3>
+    <div id="finalAnswer" class="output-box">{{ final_answer }}</div>
+</div>
+
+<div class="card">
+    <h3>Validator Confidence</h3>
+    <div class="output-box">{{ confidence }}</div>
+</div>
+
+<div class="card">
+    <h3>Full Reasoning Trace</h3>
+    <div id="reasoningTrace" class="output-box">{{ reasoning_trace }}</div>
+</div>
+
+<div class="card translate-section">
+    <h3>Translate Output</h3>
+
+    <select id="languageSelect">
+        <option value="hi-IN">Hindi</option>
+        <option value="te-IN">Telugu</option>
+        <option value="ta-IN">Tamil</option>
+        <option value="kn-IN">Kannada</option>
+        <option value="mr-IN">Marathi</option>
+        <option value="bn-IN">Bengali</option>
+    </select>
+
+    <button onclick="translateTrace()">Translate</button>
+</div>
+
+<script>
+function translateTrace() {
+
+    const language = document.getElementById("languageSelect").value;
+    const finalAnswer = document.getElementById("finalAnswer").innerText;
+    const reasoningTrace = document.getElementById("reasoningTrace").innerText;
+
+    fetch("/translate_trace", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            final_answer: finalAnswer,
+            reasoning_trace: reasoningTrace,
+            language: language
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("finalAnswer").innerText = data.translated_answer;
+        document.getElementById("reasoningTrace").innerText = data.translated_trace;
+    })
+    .catch(error => {
+        alert("Translation failed.");
+        console.error(error);
+    });
+}
+</script>
+
+{% endif %}
+
+</body>
+</html>
